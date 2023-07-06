@@ -46,6 +46,9 @@ class Broker
     /** @var TblDailyNews an instance of TblDailyNews  */
     protected TblDailyNews $tblDailyNews;
 
+    /** @var TblNews an instance of TblNews  */
+    protected TblNews $tblNews;
+
     /** @var string document type prefix for document */
     protected const DOCUMENT_PREFIX = "d";
 
@@ -55,8 +58,8 @@ class Broker
      */
     public function __construct()
     {
-        // $DbConnect = DbConnect::getInstance(SETTING_FILE);
-        // $this->dbConnect = $DbConnect;
+        $DbConnect = DbConnect::getInstance(SETTING_FILE);
+        $this->dbConnect = $DbConnect;
         $this->query = new Query();
         $this->tblStock = new TblStock();
         $this->tblNseDailyPrice = new TblNseDailyPrice();
@@ -65,6 +68,7 @@ class Broker
         $this->tblFinancialReport = new TblFinancialReport();
         $this->tblDocument = new TblDocument();
         $this->tblDailyNews = new TblDailyNews();
+        $this->tblNews = new TblNews();
     }
     
     /**
@@ -211,6 +215,117 @@ class Broker
             return $info;
         }
     }
+
+    /**
+     * for creating a news
+     *
+     * @param string $title title of the news
+     * @param string $body body of the news
+     * @param string $source source of the news
+     *
+     * @return int id of the newly created news
+     */
+    public function createNews(string $title, $body, $source): int
+    {
+        try {
+            $cols = [
+                TblNews::TITLE => [$title, 'isValue'],
+                TblNews::BODY => [$body, 'isValue'],
+                TblNews::SOURCE => [$source, 'isValue']
+                ];
+            $id = $this->tblNews->insert($cols);
+        } catch (Exception $e) {
+            throw new BrokerExpection("Error creating news: " . $e->getMessage());
+        }
+        return $id;
+    }
+
+    /**
+     * for changing or editing news
+     *
+     * @param int $id the stock id
+     * @param string $title title of the news
+     * @param string $body body of the news
+     * @param string $source source of the news
+     * @return void
+     */
+    public function changeNews(int $id, string|null $title = null, string|null $body = null, string|null $source = null)
+    {
+        if (!$title && !$body && !$source) {
+            throw new BrokerExpection("title, body or source must be provided");
+        }
+        if ($title) {
+            $cols[TblNews::TITLE] = [$title, 'isValue'];
+        }
+        if ($body) {
+            $cols[TblNews::BODY] = [$body, 'isValue'];
+        }
+        if ($source) {
+            $cols[TblNews::SOURCE] = [$source, 'isValue'];
+        }
+        $this->tblNews->updateById($cols, $id);
+    }
+
+    /**
+     * for deleting exiting news that has no dependence
+     *
+     * @param int $id the news id
+     */
+    public function deleteNews(int $id)
+    {
+        try {
+            $this->tblNews->deleteById($id);
+        } catch (Exception $e) {
+            throw new BrokerExpection("this news has dependence: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * for getting info about news
+     *
+     * @param int $id the news id
+     * @param bool $addOtherInfo if true other information is added
+     * @return array an array containing the news information
+     */
+    public function newsInfo(int $id): array
+    {
+        return $this->tblNews->get($id);
+    }
+
+    /**
+     * for getting info of some news (all defaults to first 5,000 records)
+     *
+     * @param string $title title of the news
+     * @param string $body body of the news
+     * @param string $source source of the news
+     * @return array an array containing the news information
+     */
+    public function someNewsInfo(string|null $title = null, string|null $body = null, string|null $source = null, int $count = Broker::LIMIT): array
+    {
+        $info = $bind = [];
+        $where = "";
+        if ($title) {
+            $where = " WHERE " . TblNews::TITLE . " = :title ";
+            $bind = ['title' => $title];
+        }
+        if ($body) {
+            $where = " WHERE " . TblNews::BODY . " = :body ";
+            $bind = ['body' => $body];
+        }
+        if ($title) {
+            $where = " WHERE " . TblNews::TITLE . " = :title ";
+            $bind = ['title' => $title];
+        }
+        $sql = "SELECT " . TblNews::ID . " FROM " . TblNews::TABLE . " $where ORDER BY " . TblNews::ID . " DESC LIMIT " . Broker::LIMIT;
+        $result = $bind ? $this->query->executeSql($sql, $bind) : $this->query->executeSql($sql);
+        if ($result['rows']) {
+            foreach ($result['rows'] as $aResult) {
+                $info[] = $this->newsInfo($aResult[TblNews::ID]);
+            }
+        }
+        return $info;
+    }
+    
     //=====================================================================================
     /**
      * for creating Corporate Action

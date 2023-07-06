@@ -25,11 +25,7 @@ echo $headTag;
                         </div>
 						</div>
 					</div>
-                    <button
-                        type="button"
-                        class="btn btn-primary"
-                        data-toggle="modal"
-                        data-target="#modal-add">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add">
                         <i class="ti-plus" aria-hidden="true"></i>
                         Add
                     </button>
@@ -48,7 +44,6 @@ echo $headTag;
 							<div class="box">
                                 <div class="box-header with-border">
                                     <h4 class="box-title">Downloads</h4>
-                                    <h6 class="box-subtitle">Customers signed up</h6>
                                 </div>
                                 <div class="box-body p-15">
                                     <div class="table-responsive">

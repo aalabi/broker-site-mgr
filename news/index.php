@@ -25,11 +25,7 @@ echo $headTag;
                         </div>
 						</div>
 					</div>
-                    <button
-                        type="button"
-                        class="btn btn-primary"
-                        data-toggle="modal"
-                        data-target="#modal-center">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-center">
                         <i class="ti-plus" aria-hidden="true"></i>
                         Add
                     </button>
@@ -48,7 +44,6 @@ echo $headTag;
 							<div class="box">
                                 <div class="box-header">
                                     <h4 class="box-title">News</h4>	
-                                    <h6 class="subtitle">Just click on word which you want to change and enter</h6>
                                 </div>
                         
                                 <div class="box-body">
@@ -63,24 +58,7 @@ echo $headTag;
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>The Federal Government spent a total of $1.08bn on External Debt Servicing</td>
-                                                    <td>The Federal Government spent a total of $1.08bn (N400.90bn) on external debt servicing between Janua ...</td>
-                                                    <td class="col-2">
-                                                    <a
-                                                        href="javascript:void(0)"
-                                                        class="text-white btn btn-warning"
-                                                        data-toggle="modal" data-target="#modal-edit-center"
-                                                        ><i class="ti-pencil" data-toggle="tooltip" data-original-title="Edit" aria-hidden="true"></i
-                                                    ></a>
-                                                    <a
-                                                            class="text-white btn btn-danger"
-                                                            data-toggle="modal" data-target="#modal-delete-center"
-                                                            ><i class="ti-trash" data-toggle="tooltip" data-original-title="Delete" aria-hidden="true"></i
-                                                        ></a>
-                                                    </td>
-                                                </tr>
+                                                <?= $tr ?>                                                
                                             </tbody>
                                         </table>
                                     </div>
@@ -90,118 +68,47 @@ echo $headTag;
                         <!-- Modal -->
                         <div class="modal center-modal fade" id="modal-center" tabindex="-1">
                             <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h5 class="modal-title">Add News</h5>
-                                <button type="button" class="close" data-dismiss="modal">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                </div>
-                                <div class="modal-body">
-                                <form class="form">
-                                    <div class="form-group">
-                                    <label>Title</label>
-                                    <input type="text" class="form-control" placeholder="Untitled">
-                                    </div>
-                                    <div class="form-group">
-                                                    <label>Body</label>
-                                                    <textarea rows="5" class="form-control" placeholder="(Optional)"></textarea>
-                                                    </div>
-                                    <div class="form-group">
-                                    <label>Source</label>
-                                    <input type="url" class="form-control" placeholder="http://">
-                                    </div>
-                                    <!-- /.box-body -->
-                                </form>
-                                </div>
-                                <div class="modal-footer modal-footer-uniform">
-                                <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-dismiss="modal"
-                                >
-                                    Close
-                                </button>
-                                <button type="button" class="btn btn-primary float-right">
-                                    Save changes
-                                </button>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        <!-- /.modal -->
-
-                        <!-- Modal -->
-                        <div class="modal center-modal fade" id="modal-edit-center" tabindex="-1">
-                            <div class="modal-dialog">
                                 <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Edit News</strong></h5>
-                                    <button type="button" class="close" data-dismiss="modal">
-                                    <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form class="form">
-                                    <div class="form-group">
-                                        <label>Title</label>
-                                        <input type="text" class="form-control" value="The Federal Government spent a total of $1.08bn on External Debt Servicing" placeholder="Untitled">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Add News</h5>
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
-                                    <div class="form-group">
-                                        <label>Body</label>
-                                        <textarea rows="5" class="form-control" placeholder="(Optional)"></textarea>
+                                    <div class="modal-body">
+                                        <form action="processor.php" method="post" id="add">
+                                            <?= WebPage::getCSRFTokenInputTag() ?>
+                                            <input type="hidden" name="action" value="create">
+                                            <div class="form-group">
+                                                <label>Title *</label>
+                                                <input required name="title" type="text" class="form-control" placeholder="Untitled">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Body *</label>
+                                                <textarea required name="body" rows="5" class="form-control" placeholder="Blank"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Source *</label>
+                                                <input required name="source" type="url" class="form-control" placeholder="https://">
+                                            </div>
+                                            <!-- /.box-body -->
+                                        </form>
                                     </div>
-                                    <!-- /.box-body -->
-                                    </form>
-                                </div>
-                                <div class="modal-footer modal-footer-uniform">
-                                    <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-dismiss="modal"
-                                    >
-                                    Close
-                                    </button>
-                                    <button type="button" class="btn btn-primary float-right">
-                                    Save changes
-                                    </button>
-                                </div>
+                                    <div class="modal-footer modal-footer-uniform">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                            Close
+                                        </button>
+                                        <button type="submit"  form="add" class="btn btn-primary float-right">
+                                            Save
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <!-- /.modal -->
 
-                        <!-- Modal -->
-                        <div class="modal center-modal fade" id="modal-delete-center" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Are you sure?</h5>
-                                    <button type="button" class="close" data-dismiss="modal">
-                                    <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form class="form">
-                                    <p>You are about to delete ""? This action is not reversible</p>
-                                    </form>
-                                </div>
-                                <div class="modal-footer modal-footer-uniform">
-                                    <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-dismiss="modal"
-                                    >
-                                    Close
-                                    </button>
-                                    <button type="button" class="btn btn-danger float-right">
-                                    Delete
-                                    </button>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /.modal -->
+                        <?= $editModal ?>
+                        <?= $deleteModal ?>
                     </div>
 				</section>
 				<!-- /.content -->
