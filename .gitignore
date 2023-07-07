@@ -1,3 +1,6 @@
 document/*.*
 settings.json
 test.php
+error/error.log 
+inbox/box/*.*
+inbox/inbox.csv

@@ -49,8 +49,11 @@ class Broker
     /** @var TblNews an instance of TblNews  */
     protected TblNews $tblNews;
 
-    /** @var string document type prefix for document */
-    protected const DOCUMENT_PREFIX = "d";
+    /** @var string document type prefix for downloads */
+    protected const DOWNLOADS_PREFIX = "do";
+
+    /** @var string document type prefix for daily nse summary */
+    protected const DAILY_NSE_PREFIX = "dn";
 
     /**
      * instantiation of Broker
@@ -522,37 +525,40 @@ class Broker
         }
         return $info;
     }
-    // ========================================================================================
-    //=====================================================================================
+    
     /**
-     * for creating Nse Daily Price
+     * for creating NGX Daily market summary
      *
-     * @param string $file
-     * @param string $date
-     * @param float $asi
-     * @param int $deals
-     * @param float $market_volume
-     * @param float $market_value
-     * @param float $market_cap
-     * @return int id of the newly created NseDailyPrice
+     * @param string $file a csv file containing NGX daily pricelist
+     * @param string $date the date of the NGX market summary
+     * @param float $asi the value of ASI for the summary
+     * @param int $deals the no of deals for summary
+     * @param float $marketVolume the market volume for the day
+     * @param float $marketValue the market value for the day
+     * @param float $market_cap the market capitalisation for the day
+     * @return int id of the newly created NGX Daily Price
      */
     public function createNseDailyPrice(
-        string $file,
+        array $file,
         string $date,
         float $asi,
         int $deals,
-        float $market_volume,
-        float $market_value,
+        float $marketVolume,
+        float $marketValue,
         float $market_cap
     ): int {
 
         try {
+            $filename = $this->uploadDocument($file, Broker::DAILY_NSE_PREFIX, ["csv"]);
             $cols = [
-                tblNseDailyPrice::FILE => [$file, 'isValue'], tblNseDailyPrice::DATE => [new DateTime($date), 'isValue'], tblNseDailyPrice::ASI => [$asi, 'isValue'], tblNseDailyPrice::DEALS => [$deals, 'isValue'], tblNseDailyPrice::MARKET_VOLUME => [$market_volume, 'isValue'], tblNseDailyPrice::MARKET_VALUE => [$market_value, 'isValue'], tblNseDailyPrice::MARKET_CAP => [$market_cap, 'isValue']
+                tblNseDailyPrice::FILE => [$filename, 'isValue'], tblNseDailyPrice::DATE => [new DateTime($date), 'isValue'],
+                tblNseDailyPrice::ASI => [$asi, 'isValue'], tblNseDailyPrice::DEALS => [$deals, 'isValue'],
+                tblNseDailyPrice::MARKET_VOLUME => [$marketVolume, 'isValue'], tblNseDailyPrice::MARKET_VALUE => [$marketValue, 'isValue'],
+                tblNseDailyPrice::MARKET_CAP => [$market_cap, 'isValue']
             ];
             $id = $this->tblNseDailyPrice->insert($cols);
         } catch (Exception $e) {
-            throw new BrokerExpection("Error creating Nse Daily Price : " . $e->getMessage());
+            throw new BrokerExpection("Error creating NGX Daily Price : " . $e->getMessage());
         }
         return $id;
     }
@@ -610,9 +616,11 @@ class Broker
     public function deleteNseDailyPrice(int $id)
     {
         try {
+            $nseInfo = $this->nseDailyPriceInfo($id);
+            $this->deleteUploadedDocument($nseInfo[TblNseDailyPrice::FILE]);
             $this->tblNseDailyPrice->deleteById($id);
         } catch (Exception $e) {
-            throw new BrokerExpection("this Nse Daily Price has dependence: " . $e->getMessage());
+            throw new BrokerExpection("this NGX Daily Price has dependence: " . $e->getMessage());
         }
     }
 
@@ -960,7 +968,7 @@ class Broker
     public function createDocument(string $name, string $type, int $priority, $file): int
     {
         try {
-            $filename = $this->uploadDocument($file, Broker::DOCUMENT_PREFIX, ["pdf"]);
+            $filename = $this->uploadDocument($file, Broker::DOWNLOADS_PREFIX, ["pdf"]);
             $cols = [
                 tblDocument::NAME => [$name, 'isValue'], tblDocument::TYPE => [$type, 'isValue'],
                 tblDocument::PRIORITY => [$priority, 'isValue'], tblDocument::FILE => [$filename, 'isValue']
