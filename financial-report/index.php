@@ -29,7 +29,7 @@ echo $headTag;
                         type="button"
                         class="btn btn-primary"
                         data-toggle="modal"
-                        data-target="#modal-center">
+                        data-target="#modal-center-add">
                         <i class="ti-plus" aria-hidden="true"></i>
                         Add
                     </button>
@@ -46,49 +46,43 @@ echo $headTag;
                     <div class="row">
 						<div class="col-12 mr-16">                            
 							<div class="box">
-                  <div class="box-header">
-                    <h4 class="box-title">Financial</h4>	
-                    <h6 class="subtitle">Just click on word which you want to change and enter</h6>
-                  </div>
+                                <div class="box-header">
+                                    <h4 class="box-title">Financial</h4>	
+                                    <h6 class="subtitle">Just click on word which you want to change and enter</h6>
+                                </div>
         
-                    <div class="box-body">
-                        <div class="table-responsive">
-                            <table id="example1" class="table table-bordered table-separated">
-                                <thead>
-                                <tr>
-                                    <th>S/N</th>
-                                    <th>Company</th>
-                                    <th>Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>DANGOTE SUGAR REFINERY PLC</td>
-                                    <td>
-                                    <a
-                                        href="javascript:void(0)"
-                                        class="text-white btn btn-primary"
-                                        data-toggle="tooltip"
-                                        data-original-title="View"
-                                        ><i class="ti-eye" aria-hidden="true"></i
-                                    ></a>
-                                    <a
-                                            class="text-white btn btn-danger"
-                                            data-toggle="modal" data-target="#modal-delete-center"
-                                            ><i class="ti-trash" data-toggle="tooltip" data-original-title="Delete" aria-hidden="true"></i
-                                        ></a>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table id="example1" class="table table-bordered table-separated">
+                                            <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>Company</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>DANGOTE SUGAR REFINERY PLC</td>
+                                                    <td>
+                                                    <a href="javascript:void(0)" class="text-white btn btn-primary" data-toggle="tooltip" data-original-title="View">
+                                                        <i class="ti-eye" aria-hidden="true"></i>
+                                                    </a>
+                                                    <a class="text-white btn btn-danger" data-toggle="modal" data-target="#modal-delete-center">
+                                                        <i class="ti-trash" data-toggle="tooltip" data-original-title="Delete" aria-hidden="true"></i>
+                                                    </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         <!-- Modal -->
-                        <div class="modal center-modal fade" id="modal-center" tabindex="-1">
+                        <div class="modal center-modal fade" id="modal-center-add" tabindex="-1">
                             <div class="modal-dialog">
                             <div class="modal-content" style="height: 500px; overflow-y: scroll;">
                                 <div class="modal-header">
