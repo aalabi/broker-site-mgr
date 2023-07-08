@@ -38,7 +38,6 @@ if($marketReviewCollection = $Broker->someMarketReviewInfo(TblMarketReview::TYPE
     $counter = 1;
     foreach ($marketReviewCollection as $aMarketReview) {
         $href = Functions::getDocUrl(true).$aMarketReview[TblMarketReview::FILE];
-        $pillType = $aMarketReview[TblMarketReview::SUB_TYPE] == TblMarketReview::SUB_TYPE_VALUE[0]? "primary" :"secondary";
         $tr .= "  
             <tr>                                                
                 <td>".($counter++)."</td>
