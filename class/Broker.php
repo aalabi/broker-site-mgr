@@ -359,10 +359,20 @@ class Broker
             $cols = [
                 tblCorporateAction::STOCK_ID => [$stockId, 'isValue'], tblCorporateAction::YEAR => [$year, 'isValue'],
                 tblCorporateAction::PERIOD => [$period, 'isValue'], tblCorporateAction::DIVIDEND => [$dividend, 'isValue'],
-                tblCorporateAction::INTERIM => [$interim, 'isValue'], tblCorporateAction::BONUS => [$bonus, 'isValue'],
-                tblCorporateAction::CLOSURE_DATE => [$closureDate, 'isValue'], tblCorporateAction::AGM_DATE => [$agmDate, 'isValue'],
-                tblCorporateAction::PAYMENT_DATE => [$paymentDate, 'isValue']
+                tblCorporateAction::INTERIM => [$interim, 'isValue']
             ];
+            if($bonus) {
+                $cols[tblCorporateAction::BONUS] = [$bonus, 'isValue'];
+            }
+            if($closureDate) {
+                $cols[tblCorporateAction::CLOSURE_DATE] = [$closureDate, 'isValue'];
+            }
+            if($agmDate) {
+                $cols[tblCorporateAction::AGM_DATE] = [$agmDate, 'isValue'];
+            }
+            if($paymentDate) {
+                $cols[tblCorporateAction::PAYMENT_DATE] = [$paymentDate, 'isValue'];
+            }
             $id = $this->tblCorporateAction->insert($cols);
         } catch (Exception $e) {
             throw new BrokerExpection("Error creating Corporate Action : " . $e->getMessage());
@@ -1182,4 +1192,17 @@ class Broker
         }
         return $info;
     }
+
+    /**
+     * getting name of periods
+     *
+     * @return array a collection of periods
+     */
+    public function periodNames(): array
+    {
+        $names = ["1st Quarter", "2nd Quarter", "3rd Quarter", "4th Quarter", "Full Year"];
+        $periods = array_combine(AbstractTable::PERIOD_VALUES, $names);
+        return $periods;
+    }
+
 }

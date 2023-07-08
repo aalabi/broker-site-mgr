@@ -253,7 +253,8 @@ class TblCorporateAction extends AbstractTable implements InterfaceQuery
      */
     public function insert(array $cols, ?string $table = null): int
     {
-        if (!isset($cols[TblCorporateAction::STOCK_ID]) || !isset($cols[TblCorporateAction::YEAR]) || !isset($cols[TblCorporateAction::PERIOD]) || !isset($cols[TblCorporateAction::DIVIDEND]) || !isset($cols[TblCorporateAction::INTERIM]) || !isset($cols[TblCorporateAction::BONUS]) || !isset($cols[TblCorporateAction::CLOSURE_DATE]) || !isset($cols[TblCorporateAction::AGM_DATE]) || !isset($cols[TblCorporateAction::PAYMENT_DATE])) {
+        if (!isset($cols[TblCorporateAction::STOCK_ID]) || !isset($cols[TblCorporateAction::YEAR]) || !isset($cols[TblCorporateAction::PERIOD]) ||
+            !isset($cols[TblCorporateAction::DIVIDEND])) {
             $errors = [];
             if (!isset($cols[TblCorporateAction::STOCK_ID])) {
                 $errors[] = "stock_id is required";
@@ -266,21 +267,6 @@ class TblCorporateAction extends AbstractTable implements InterfaceQuery
             }
             if (!isset($cols[TblCorporateAction::DIVIDEND])) {
                 $errors[] = "dividend is required";
-            }
-            if (!isset($cols[TblCorporateAction::INTERIM])) {
-                $errors[] = "interim is required";
-            }
-            if (!isset($cols[TblCorporateAction::BONUS])) {
-                $errors[] = "bonus is required";
-            }
-            if (!isset($cols[TblCorporateAction::CLOSURE_DATE])) {
-                $errors[] = "closure_date is required";
-            }
-            if (!isset($cols[TblCorporateAction::AGM_DATE])) {
-                $errors[] = "agm_date is required";
-            }
-            if (!isset($cols[TblCorporateAction::PAYMENT_DATE])) {
-                $errors[] = "payment_date is required";
             }
             if ($errors) {
                 throw new TblCorporateActionExpection("TblCorporateAction Error: insert data issue '" . implode(", ", $errors) . "'.");
@@ -295,16 +281,26 @@ class TblCorporateAction extends AbstractTable implements InterfaceQuery
         $cols[TblCorporateAction::PERIOD][0] = $this->getPeriod();
         $this->setDividend($cols[TblCorporateAction::DIVIDEND][0]);
         $cols[TblCorporateAction::DIVIDEND][0] = $this->getDividend();
-        $this->setInterim($cols[TblCorporateAction::INTERIM][0]);
-        $cols[TblCorporateAction::INTERIM][0] = $this->getInterim();
-        $this->setBonus($cols[TblCorporateAction::BONUS][0]);
-        $cols[TblCorporateAction::BONUS][0] = $this->getBonus();
-        $this->setClosureDate($cols[TblCorporateAction::CLOSURE_DATE][0]);
-        $cols[TblCorporateAction::CLOSURE_DATE][0] = $this->getClosureDate();
-        $this->setAgmDate($cols[TblCorporateAction::AGM_DATE][0]);
-        $cols[TblCorporateAction::AGM_DATE][0] = $this->getAgmDate();
-        $this->setPaymentDate($cols[TblCorporateAction::PAYMENT_DATE][0]);
-        $cols[TblCorporateAction::PAYMENT_DATE][0] = $this->getPaymentDate();
+        if (isset($cols[TblCorporateAction::INTERIM])) {
+            $this->setInterim($cols[TblCorporateAction::INTERIM][0]);
+            $cols[TblCorporateAction::INTERIM][0] = $this->getInterim();
+        }
+        if (isset($cols[TblCorporateAction::BONUS])) {
+            $this->setBonus($cols[TblCorporateAction::BONUS][0]);
+            $cols[TblCorporateAction::BONUS][0] = $this->getBonus();
+        }
+        if (isset($cols[TblCorporateAction::CLOSURE_DATE])) {
+            $this->setClosureDate($cols[TblCorporateAction::CLOSURE_DATE][0]);
+            $cols[TblCorporateAction::CLOSURE_DATE][0] = $this->getClosureDate();
+        }
+        if (isset($cols[TblCorporateAction::AGM_DATE])) {
+            $this->setAgmDate($cols[TblCorporateAction::AGM_DATE][0]);
+            $cols[TblCorporateAction::AGM_DATE][0] = $this->getAgmDate();
+        }
+        if (isset($cols[TblCorporateAction::PAYMENT_DATE])) {
+            $this->setPaymentDate($cols[TblCorporateAction::PAYMENT_DATE][0]);
+            $cols[TblCorporateAction::PAYMENT_DATE][0] = $this->getPaymentDate();
+        }
 
         return $this->query->insert($cols);
     }

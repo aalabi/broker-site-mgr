@@ -31,3 +31,23 @@ $responseTag = "";
 if ($formResponse = WebPage::getResponse()) {
     $responseTag = WebPage::responseTag($formResponse['title'], $formResponse['messages'][0], $formResponse['status']);
 }
+
+$Broker = new Broker();
+
+$companyOption = "<option value=''>Select Company</option>";
+$allStock = $Broker->someStockInfo();
+foreach ($allStock as $aStock) {
+    $companyOption .= "<option value='{$aStock[TblStock::ID]}'>{$aStock[TblStock::NAME]}</option>";
+}
+
+$yearOption = "<option value=''>Select Year</option>";
+$thisYear = date("Y");
+for ($year = $thisYear; $year < 1960 ; $year--) {
+    $yearOption = "<option value='$year'>$year</option>";
+}
+
+$periodOption = "<option value=''>Select Period</option>";
+$periodCollection = $Broker->periodNames();
+foreach ($periodCollection as $ordinal => $name) {
+    $periodOption = "<option value='$ordinal'>$name</option>";
+}

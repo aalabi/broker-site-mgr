@@ -97,7 +97,7 @@ class WebPage extends AbstractWebPage
             ],
             'Research(Company)'=>[
                 'fa fa-cog',
-                'Corporate Analysis'=>$url."corporate-analysis",
+                'Corporate Action'=>$url."corporate-action",
                 'Financial Report'=>$url."financial-report",
             ],
             'News' => ['fa fa-cog', $url."news"],

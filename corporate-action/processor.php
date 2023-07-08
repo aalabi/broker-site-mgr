@@ -46,21 +46,21 @@ if (
             $closureDate = htmlspecialchars(trim($_POST['closureDate']));
             $agmDate = htmlspecialchars(trim($_POST['agmDate']));
             $pymtDate = htmlspecialchars(trim($_POST['pymtDate']));
-            $Broker->createFinancialReport($company, $period, new DateTime($year), []);
-            $message = "A new financial report was successfully uploaded";
+            $Broker->createCorporateAction($company, new DateTime($year), $period, $dividend, $interim, $bonus, $closureDate, $agmDate, $pymtDate);
+            $message = "A corporate action was successfully uploaded";
             $responseStatus = WebPage::RESPONSE_POSITIVE;
         } catch(Exception $e) {
-            $message = "Financial report creation failed: ".$e->getMessage();
+            $message = "Corporate action creation failed: ".$e->getMessage();
             $responseStatus = WebPage::RESPONSE_NEGATIVE;
         }
     }
     if ($_POST['action'] == 'delete') {
         try {
-            $Broker->deleteNseDailyPrice($id);
-            $message = "A daily market summary was successfully deleted";
+            $Broker->deleteCorporateAction($id);
+            $message = "A corporate action was successfully deleted";
             $responseStatus = WebPage::RESPONSE_POSITIVE;
         } catch (Exception $e) {
-            $message = "A daily market summary deleting failed: ".$e->getMessage();
+            $message = "A corporate action deleting failed: ".$e->getMessage();
             $responseStatus = WebPage::RESPONSE_NEGATIVE;
         }
     }

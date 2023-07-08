@@ -84,102 +84,88 @@ echo $headTag;
                         <!-- Modal -->
                         <div class="modal center-modal fade" id="modal-center-add" tabindex="-1">
                             <div class="modal-dialog">
-                            <div class="modal-content" style="height: 500px; overflow-y: scroll;">
-                                <div class="modal-header">
-                                <h5 class="modal-title">Add Company Analysis</h5>
-                                <button type="button" class="close" data-dismiss="modal">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                </div>
-                                <div class="modal-body">
-                                <form class="form">
-                                    <div class="form-group">
-                                    <label>Company</label>
-                                    <select class="form-control select2" style="width: 100%;">
-                                        <option selected="selected">Select Company</option>
-                                        <option>7UP BOTTLING COMP PLC</option>
-                                    </select>
-                                    </div> 
-                                    <div class="form-group">
-                                    <label>Year</label>
-                                    <select class="form-control select2" style="width: 100%;">
-                                        <option selected="selected">Select Year</option>
-                                        <option>2018</option>
-                                        <option>2019</option>
-                                        <option>2020</option>
-                                        <option>2021</option>
-                                        <option>2022</option>
-                                        <option>2023</option>
-                                    </select>
+                                <div class="modal-content" style="height: 500px; overflow-y: scroll;">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Add Company Analysis</h5>
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
-                                    <div class="form-group">
-                                        <label>Period</label>
-                                        <select class="form-control select2" style="width: 100%;">
-                                        <option selected="selected">Select Period</option>
-                                        <option>1st Quarter</option>
-                                        <option>2nd Quarter</option>
-                                        <option>3rd Quarter</option>
-                                        <option>4th Quarter</option>
-                                        <option>Full Year</option>
-                                        </select>
-                                        </div>  
-                                        <div class="form-group">
-                                        <label>Dividends</label>
-                                        <div>
-                                            <input type="number" class="form-control" placeholder="(Optional)">
-                                        </div>
-                                        </div>
-                                        <div class="form-group">
-                                        <label>Interim (Optional)</label>
-                                        <div>
-                                            <input name="group5" type="radio" id="radio_29" class="with-gap radio-col-primary" />
-                                            <label for="radio_29">Yes</label>
-                                            <input name="group5" type="radio" id="radio_30" class="with-gap radio-col-primary" />
-                                            <label for="radio_30">No</label>
-                                        </div>
-                                        </div>
-                                        <div class="form-group">
-                                        <label>Bonus</label>
-                                        <div>
-                                            <input type="text" class="form-control" placeholder="(Optional)">
-                                        </div>
-                                        </div>
-                                        <div class="form-group">
-                                        <label>Closure Date</label>
-                                        <div>
-                                            <input type="date" class="form-control">
-                                        </div>
-                                        <small>Optional</small>
-                                        </div>
-                                        <div class="form-group">
-                                        <label>AGM Date</label>
-                                        <div>
-                                            <input type="date" class="form-control">
-                                        </div>
-                                        <small>Optional</small>
-                                        </div>
-                                        <div class="form-group">
-                                        <label>Payment Date</label>
-                                        <div>
-                                            <input type="date" class="form-control">
-                                        </div>
-                                        </div>
-                                    <!-- /.box-body -->
-                                </form>
+                                    <div class="modal-body">
+                                        <form action="processor.php" method="post" id="add">
+                                            <?= WebPage::getCSRFTokenInputTag() ?>
+                                            <input type="hidden" name="action" value="create">
+                                            <div class="form-group">
+                                                <label>Company *</label>
+                                                <select name="company" required class="form-control select2" style="width: 100%;">                                                    
+                                                    <?= $companyOption ?>
+                                                </select>
+                                            </div> 
+                                            <div class="form-group">
+                                                <label>Year  *</label>
+                                                <select name="year" required class="form-control select2" style="width: 100%;">
+                                                    <?= $yearOption ?>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Period *</label>
+                                                <select name="period" required class="form-control select2" style="width: 100%;">
+                                                    <?= $periodOption ?>                                                
+                                                </select>
+                                            </div>
+                                                <div class="form-group">
+                                                <label>Dividends</label>
+                                                <div>
+                                                    <input name="dividend" type="number" class="form-control" placeholder="(Optional)">
+                                                </div>
+                                            </div>
+                                                <div class="form-group">
+                                                <label>Interim (Optional)</label>
+                                                <div>
+                                                    <input name="interim" type="radio" id="radio_29" class="with-gap radio-col-primary" />
+                                                    <label for="radio_29">Yes</label>
+                                                    <input name="interim" type="radio" id="radio_30" class="with-gap radio-col-primary" />
+                                                    <label for="radio_30">No</label>
+                                                </div>
+                                            </div>
+                                                <div class="form-group">
+                                                <label>Bonus</label>
+                                                <div>
+                                                    <input name="bonus" type="number" class="form-control" placeholder="(Optional)">
+                                                </div>
+                                            </div>
+                                                <div class="form-group">
+                                                <label>Closure Date</label>
+                                                <div>
+                                                    <input name="closureDate" type="date" class="form-control">
+                                                </div>
+                                                <small>Optional</small>
+                                                </div>
+                                            <div class="form-group">
+                                                <label>AGM Date</label>
+                                                <div>
+                                                    <input name="agmDate" type="date" class="form-control">
+                                                </div>
+                                                <small>Optional</small>
+                                            </div>
+                                                <div class="form-group">
+                                                <label>Payment Date</label>
+                                                <div>
+                                                    <input name="pymtDate" type="date" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!-- /.box-body -->
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer modal-footer-uniform">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                        Close
+                                    </button>
+                                    <button form="add" type="submit" class="btn btn-primary float-right">
+                                        Save changes
+                                    </button>
+                                    </div>
                                 </div>
-                                <div class="modal-footer modal-footer-uniform">
-                                <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-dismiss="modal"
-                                >
-                                    Close
-                                </button>
-                                <button type="button" class="btn btn-primary float-right">
-                                    Save changes
-                                </button>
-                                </div>
-                            </div>
                             </div>
                         </div>
                         <!-- /.modal -->

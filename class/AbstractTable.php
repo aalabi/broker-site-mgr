@@ -83,7 +83,7 @@ abstract class AbstractTable
     public const PERIOD = "period";
 
     /** @var array  collection of period values*/
-    public const PERIOD_VALUES = [1, 2, 3, 4, "1"=>1, "2"=>2, "3"=>3, "4"=>4];
+    public const PERIOD_VALUES = [1, 2, 3, 4, -1];
 
     /** @var string  type*/
     public const TYPE = "type";
