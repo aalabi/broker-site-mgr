@@ -48,14 +48,10 @@ echo $headTag;
 							<div class="box">
                                 <div class="box-header with-border">
                                     <h4 class="box-title">Weekly Market Review</h4>
-                                    <h6 class="box-subtitle">Customers signed up</h6>
                                 </div>
                                 <div class="box-body p-15">
                                     <div class="table-responsive">
-                                        <table
-                                            id="tickets"
-                                            class="table mt-0 table-hover no-wrap table-borderless"
-                                            data-page-size="10">
+                                        <table id="tickets" class="table mt-0 table-hover no-wrap table-borderless" data-page-size="10">
                                             <thead>
                                             <tr>
                                                 <th>S/N</th>
@@ -64,24 +60,7 @@ echo $headTag;
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>2023-06-19 - 2023-06-23</td>
-                                                <td>
-                                                <a
-                                                    href="javascript:void(0)"
-                                                    class="text-white btn btn-primary"
-                                                    data-toggle="tooltip"
-                                                    data-original-title="View"
-                                                    ><i class="ti-eye" aria-hidden="true"></i
-                                                ></a>
-                                                <a
-                                                    class="text-white btn btn-danger"
-                                                    data-toggle="modal" data-target="#modal-delete-center"
-                                                    ><i class="ti-trash" data-toggle="tooltip" data-original-title="Delete" aria-hidden="true"></i
-                                                ></a>
-                                                </td>
-                                            </tr>
+                                                <?= $tr ?>                                            
                                             </tbody>
                                         </table>
                                     </div>
@@ -92,81 +71,48 @@ echo $headTag;
                         <!-- Modal -->
                         <div class="modal center-modal fade" id="modal-center" tabindex="-1">
                             <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h5 class="modal-title">Add Weekly Market Review</h5>
-                                <button type="button" class="close" data-dismiss="modal">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                </div>
-                                <div class="modal-body">
-                                <form class="form">
-                                    <div class="form-group">
-                                    <label>Start Date</label>
-                                    <input type="date" class="form-control">
-                                    </div>  
-                                    <div class="form-group">
-                                    <label>End Date</label>
-                                    <input type="date" class="form-control">
-                                    </div> 
-                                    <div class="form-group">
-                                        <label>Report</label>
-                                        <div>
-                                        <input type="file" class="form-control">
-                                        </div>
-                                        <small>PDF max. 10MB</small>
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Add Weekly Market Review</h5>
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
-                                    <!-- /.box-body -->
-                                </form>
+                                    <div class="modal-body">
+                                        <form action="processor.php" method="post" id="add" enctype="multipart/form-data">
+                                            <?= WebPage::getCSRFTokenInputTag() ?>
+                                            <input type="hidden" name="action" value="create">
+                                            <div class="form-group">
+                                                <label>Start Date *</label>
+                                                <input required name="startDate" type="date" class="form-control">
+                                            </div>  
+                                            <div class="form-group">
+                                                <label>End Date *</label>
+                                                <input required name="endDate" type="date" class="form-control">
+                                            </div> 
+                                            <div class="form-group">
+                                                <label>Report *</label>
+                                                <div>
+                                                    <input required name="report" type="file" class="form-control">
+                                                </div>
+                                                <small>PDF max. 10MB</small>
+                                            </div>
+                                            <!-- /.box-body -->
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer modal-footer-uniform">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                            Close
+                                        </button>
+                                        <button type="submit" form="add" class="btn btn-primary float-right">
+                                            Save changes
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="modal-footer modal-footer-uniform">
-                                <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-dismiss="modal"
-                                >
-                                    Close
-                                </button>
-                                <button type="button" class="btn btn-primary float-right">
-                                    Save changes
-                                </button>
-                                </div>
-                            </div>
                             </div>
                         </div>
                         <!-- /.modal -->
-
-                        <!-- Modal -->
-                        <div class="modal center-modal fade" id="modal-delete-center" tabindex="-1">
-                            <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h5 class="modal-title">Are you sure?</h5>
-                                <button type="button" class="close" data-dismiss="modal">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                </div>
-                                <div class="modal-body">
-                                <form class="form">
-                                    <p>You are about to delete ""? This action is not reversible</p>
-                                </form>
-                                </div>
-                                <div class="modal-footer modal-footer-uniform">
-                                <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-dismiss="modal"
-                                >
-                                    Close
-                                </button>
-                                <button type="button" class="btn btn-danger float-right">
-                                    Delete
-                                </button>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        <!-- /.modal -->
+                        <?= $deleteModal ?>                        
                     </div>
 				</section>
 				<!-- /.content -->
