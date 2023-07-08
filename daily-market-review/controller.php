@@ -31,3 +31,61 @@ $responseTag = "";
 if ($formResponse = WebPage::getResponse()) {
     $responseTag = WebPage::responseTag($formResponse['title'], $formResponse['messages'][0], $formResponse['status']);
 }
+
+$Broker = new Broker();
+$tr = $deleteModal = "";
+if($marketReviewCollection = $Broker->someMarketReviewInfo(TblMarketReview::TYPE_VALUE[0])) {
+    $counter = 1;
+    foreach ($marketReviewCollection as $aMarketReview) {
+        $href = Functions::getDocUrl(true).$aMarketReview[TblMarketReview::FILE];
+        $pillType = $aMarketReview[TblMarketReview::SUB_TYPE] == TblMarketReview::SUB_TYPE_VALUE[0]? "primary" :"secondary";
+        $tr .= "   
+            <tr>
+                <td>".($counter++)."</td>
+                <td>{$aMarketReview[TblMarketReview::DATE]}</td>                
+                <td><span class='badge badge-pill badge-$pillType'>{$aMarketReview[TblMarketReview::SUB_TYPE]}</span></td>
+                <td>
+                    <a href='$href' class='text-white btn btn-primary' data-toggle='tooltip' data-original-title='View' target='_blank'>
+                        <i class='ti-eye' aria-hidden='true'></i>
+                    </a>
+                    <a class='text-white btn btn-danger' data-toggle='modal' data-target='#modal-delete-center-$counter'>
+                        <i class='ti-trash' data-toggle='tooltip' data-original-title='Delete' aria-hidden='true'></i>
+                    </a>
+                </td>
+            </tr>
+        ";
+
+        $deleteModal .= "
+            <!-- Modal -->
+            <div class='modal center-modal fade' id='modal-delete-center-$counter' tabindex='-1'>
+                <div class='modal-dialog'>
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <h5 class='modal-title'>Are you sure?</h5>
+                            <button type='button' class='close' data-dismiss='modal'>
+                                <span aria-hidden='true'>&times;</span>
+                            </button>
+                        </div>
+                        <div class='modal-body'>
+                            <form action='processor.php' method='post' id='delete-$counter'>
+                                ".WebPage::getCSRFTokenInputTag()."
+                                <input type='hidden' name='action' value='delete'>
+                                <input type='hidden' name='id' value='{$aMarketReview[TblMarketReview::ID]}'>
+                                <p>You are about to delete daily market review for '{$aMarketReview[TblMarketReview::DATE]}'? This action is not reversible</p>
+                            </form>
+                        </div>
+                        <div class='modal-footer modal-footer-uniform'>
+                            <button type='button' class='btn btn-secondary' data-dismiss='modal'>
+                                Close
+                            </button>
+                            <button type='submit' form='delete-$counter' class='btn btn-danger float-right'>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal -->
+        ";
+    }
+}

@@ -28,6 +28,9 @@ class TblMarketReview extends AbstractTable implements InterfaceQuery
     /** @var string  end_date*/
     public const END_DATE = "end_date";
 
+    /** @var array  collection of type values*/
+    public const TYPE_VALUE = ['daily','weekly','monthly','nasd'];
+
     /** @var string  sub_type*/
     public const SUB_TYPE = "sub_type";
 
@@ -70,10 +73,28 @@ class TblMarketReview extends AbstractTable implements InterfaceQuery
             $errors[] = "'$sub_type' is not among '" . implode(", ", TblMarketReview::SUB_TYPE_VALUE) . "'";
         }
         if ($errors) {
-            throw new TblMarketReviewExpection("TblMarketReview Error: status issue '" . implode(", ", $errors) . "'.");
+            throw new TblMarketReviewExpection("TblMarketReview Error: sub type issue '" . implode(", ", $errors) . "'.");
         }
 
         $this->sub_type = $sub_type;
+    }
+
+    /**
+     * set type
+     *
+     * @param string type
+    */
+    public function setType(string $type)
+    {
+        $errors = [];
+        if (!in_array($type, TblMarketReview::TYPE_VALUE)) {
+            $errors[] = "'$type' is not among '" . implode(", ", TblMarketReview::TYPE_VALUE) . "'";
+        }
+        if ($errors) {
+            throw new TblMarketReviewExpection("TblMarketReview Error: type issue '" . implode(", ", $errors) . "'.");
+        }
+
+        $this->type = $type;
     }
 
     /**
@@ -131,11 +152,15 @@ class TblMarketReview extends AbstractTable implements InterfaceQuery
         $cols[TblMarketReview::FILE][0] = $this->getFILE();
         $this->setDate($cols[TblMarketReview::DATE][0]);
         $cols[TblMarketReview::DATE][0] = $this->getDate();
-        $this->setEndDate($cols[TblMarketReview::END_DATE][0]);
-        $cols[TblMarketReview::END_DATE][0] = $this->getEndDate();
-        $this->setSubType($cols[TblMarketReview::SUB_TYPE][0]);
-        $cols[TblMarketReview::SUB_TYPE][0] = $this->getSubType();
+        if (isset($cols[TblMarketReview::END_DATE])) {
+            $this->setEndDate($cols[TblMarketReview::END_DATE][0]);
+            $cols[TblMarketReview::END_DATE][0] = $this->getEndDate();
+        }
+        if (isset($cols[TblMarketReview::SUB_TYPE])) {
+            $this->setSubType($cols[TblMarketReview::SUB_TYPE][0]);
+            $cols[TblMarketReview::SUB_TYPE][0] = $this->getSubType();
 
+        }
 
         return $this->query->insert($cols);
     }

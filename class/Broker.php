@@ -58,6 +58,9 @@ class Broker
     /** @var string document type prefix for financial report */
     protected const FINANCIAL_REPORT_PREFIX = "fi";
 
+    /** @var string document type prefix for market review */
+    protected const MARKET_REVIEW_PREFIX = "ma";
+
     /**
      * instantiation of Broker
      *
@@ -702,28 +705,34 @@ class Broker
         }
         return $info;
     }
-    // ========================================================================
+    
     /**
      * for creating Market Review
      *
      * @param string $type
      * @param string $file
-     * @param string $date
-     * @param string $end_date
-     * @param string $sub_type
+     * @param DateTime $date
+     * @param DateTime $endDate
+     * @param string $subType
      */
     public function createMarketReview(
         string $type,
-        string $file,
-        string $date,
-        string|null $end_date = null,
-        string $sub_type
+        array $file,
+        DateTime $date,
+        DateTime|null $endDate = null,
+        string|null $subType = null
     ): int {
         try {
+            $filename = $this->uploadDocument($file, $type.Broker::MARKET_REVIEW_PREFIX, ["pdf"]);
             $cols = [
-                tblMarketReview::TYPE => [$type, 'isValue'], tblMarketReview::FILE => [$file, 'isValue'],
-                tblMarketReview::DATE => [new DateTime($date), 'isValue'], tblMarketReview::END_DATE => [$end_date, 'isValue'], tblMarketReview::SUB_TYPE => [$sub_type, 'isValue']
+                tblMarketReview::TYPE => [$type, 'isValue'], tblMarketReview::FILE => [$filename, 'isValue'], tblMarketReview::DATE => [$date, 'isValue']
             ];
+            if($endDate) {
+                $cols[tblMarketReview::END_DATE] =  [$endDate, 'isValue'];
+            }
+            if($subType) {
+                $cols[tblMarketReview::SUB_TYPE] =  [$subType, 'isValue'];
+            }
             $id = $this->tblMarketReview->insert($cols);
         } catch (Exception $e) {
             throw new BrokerExpection("Error creating Market Review : " . $e->getMessage());
@@ -779,6 +788,8 @@ class Broker
     public function deleteMarketReview(int $id)
     {
         try {
+            $marketReviewInfo = $this->marketReviewInfo($id);
+            $this->deleteUploadedDocument($marketReviewInfo[TblMarketReview::FILE]);
             $this->tblMarketReview->deleteById($id);
         } catch (Exception $e) {
             throw new BrokerExpection("this Market Review has dependence: " . $e->getMessage());
@@ -800,17 +811,17 @@ class Broker
      * for getting info of some Market Review (all defaults to first 5,000 records)
      * @param string|null $type
      * @param string|null $file
-     * @param string|null $date
-     * @param string|null $end_date
-     * @param string|null $sub_type
+     * @param DateTime|null $date
+     * @param DateTime|null $endDate
+     * @param string|null $subType
      *
      */
     public function someMarketReviewInfo(
         string|null $type = null,
         string|null $file = null,
-        string|null $date = null,
-        string|null $end_date = null,
-        string|null $sub_type = null
+        DateTime|null $date = null,
+        DateTime|null $endDate = null,
+        string|null $subType = null
     ): array {
         $info = $bind = [];
         $where = "";
@@ -824,15 +835,15 @@ class Broker
         }
         if ($date) {
             $where .= $where ?  " AND " . tblMarketReview::DATE . " = :date " : " WHERE " . tblMarketReview::DATE . " = :date ";
-            $bind['date'] = $date;
+            $bind['date'] = $date->format('Y-m-d');
         }
-        if ($end_date) {
+        if ($endDate) {
             $where .= $where ?  " AND " . tblMarketReview::END_DATE . " = :end_date " : " WHERE " . tblMarketReview::END_DATE . " = :end_date ";
-            $bind['end_date'] = $end_date;
+            $bind['end_date'] = $endDate->format('Y-m-d');
         }
-        if ($sub_type) {
+        if ($subType) {
             $where .= $where ?  " AND " . tblMarketReview::SUB_TYPE . " = :sub_type " : " WHERE " . tblMarketReview::SUB_TYPE . " = :sub_type ";
-            $bind['sub_type'] = $sub_type;
+            $bind['sub_type'] = $subType;
         }
 
         $sql = "SELECT " . tblMarketReview::ID . " FROM " . tblMarketReview::TABLE . " $where ORDER BY " . tblMarketReview::ID . " DESC LIMIT " . Broker::LIMIT;
