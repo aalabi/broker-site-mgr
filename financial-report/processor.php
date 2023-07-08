@@ -40,13 +40,7 @@ if (
             $company = htmlspecialchars(trim($_POST['company']));
             $year = htmlspecialchars(trim($_POST['year']));
             $period = htmlspecialchars(trim($_POST['period']));
-            $dividend = htmlspecialchars(trim($_POST['dividend']));
-            $interim = htmlspecialchars(trim($_POST['interim']));
-            $bonus = htmlspecialchars(trim($_POST['bonus']));
-            $closureDate = htmlspecialchars(trim($_POST['closureDate']));
-            $agmDate = htmlspecialchars(trim($_POST['agmDate']));
-            $pymtDate = htmlspecialchars(trim($_POST['pymtDate']));
-            $Broker->createFinancialReport($company, $period, new DateTime($year), []);
+            $Broker->createFinancialReport($company, $period, new DateTime($year), $_FILES);
             $message = "A new financial report was successfully uploaded";
             $responseStatus = WebPage::RESPONSE_POSITIVE;
         } catch(Exception $e) {
@@ -56,11 +50,11 @@ if (
     }
     if ($_POST['action'] == 'delete') {
         try {
-            $Broker->deleteNseDailyPrice($id);
-            $message = "A daily market summary was successfully deleted";
+            $Broker->deleteFinancialReport($id);
+            $message = "Financial report was successfully deleted";
             $responseStatus = WebPage::RESPONSE_POSITIVE;
         } catch (Exception $e) {
-            $message = "A daily market summary deleting failed: ".$e->getMessage();
+            $message = "Financial report deleting failed: ".$e->getMessage();
             $responseStatus = WebPage::RESPONSE_NEGATIVE;
         }
     }

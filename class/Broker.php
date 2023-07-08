@@ -55,6 +55,9 @@ class Broker
     /** @var string document type prefix for daily nse summary */
     protected const DAILY_NSE_PREFIX = "dn";
 
+    /** @var string document type prefix for financial report */
+    protected const FINANCIAL_REPORT_PREFIX = "fi";
+
     /**
      * instantiation of Broker
      *
@@ -841,20 +844,22 @@ class Broker
         }
         return $info;
     }
-    // ====================================================================
+    
     /**
      * for creating Financial Report
      *
      * @param int $stockId a foreign key column
      * @param int $period
      * @param DateTime $year
-     * @param string $file
+     * @param array $file
      */
-    public function createFinancialReport(int $stockId, int $period, DateTime $year, string $file): int
+    public function createFinancialReport(int $stockId, int $period, DateTime $year, array $file): int
     {
         try {
+            $filename = $this->uploadDocument($file, Broker::FINANCIAL_REPORT_PREFIX, ["pdf"]);
             $cols = [
-                tblFinancialReport::STOCK_ID => [$stockId, 'isValue'], tblFinancialReport::PERIOD => [$period, 'isValue'], tblFinancialReport::YEAR => [$year, 'isValue'], tblFinancialReport::FILE => [$file, 'isValue']
+                tblFinancialReport::STOCK_ID => [$stockId, 'isValue'], tblFinancialReport::PERIOD => [$period, 'isValue'], tblFinancialReport::YEAR => [$year, 'isValue'],
+                tblFinancialReport::FILE => [$filename, 'isValue']
             ];
             $id = $this->tblFinancialReport->insert($cols);
         } catch (Exception $e) {
@@ -906,6 +911,8 @@ class Broker
     public function deleteFinancialReport(int $id)
     {
         try {
+            $docInfo = $this->financialReportInfo($id);
+            $this->deleteUploadedDocument($docInfo[TblFinancialReport::FILE]);
             $this->tblFinancialReport->deleteById($id);
         } catch (Exception $e) {
             throw new BrokerExpection("this Fianancial Report has dependence: " . $e->getMessage());
@@ -965,7 +972,7 @@ class Broker
         }
         return $info;
     }
-    // ===================================================================
+    
     /**
      * for creating Document
      *
