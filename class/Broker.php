@@ -49,6 +49,9 @@ class Broker
     /** @var TblNews an instance of TblNews  */
     protected TblNews $tblNews;
 
+    /** @var TblNewsletter an instance of TblNewsletter */
+    protected TblNewsletter $tblNewsletter;
+
     /** @var string document type prefix for downloads */
     protected const DOWNLOADS_PREFIX = "do";
 
@@ -78,6 +81,7 @@ class Broker
         $this->tblDocument = new TblDocument();
         $this->tblDailyNews = new TblDailyNews();
         $this->tblNews = new TblNews();
+        $this->tblNewsletter = new TblNewsletter();
     }
     
     /**
@@ -725,13 +729,13 @@ class Broker
         try {
             $filename = $this->uploadDocument($file, $type.Broker::MARKET_REVIEW_PREFIX, ["pdf"]);
             $cols = [
-                tblMarketReview::TYPE => [$type, 'isValue'], tblMarketReview::FILE => [$filename, 'isValue'], tblMarketReview::DATE => [$date, 'isValue']
+                TblMarketReview::TYPE => [$type, 'isValue'], TblMarketReview::FILE => [$filename, 'isValue'], TblMarketReview::DATE => [$date, 'isValue']
             ];
             if($endDate) {
-                $cols[tblMarketReview::END_DATE] =  [$endDate, 'isValue'];
+                $cols[TblMarketReview::END_DATE] =  [$endDate, 'isValue'];
             }
             if($subType) {
-                $cols[tblMarketReview::SUB_TYPE] =  [$subType, 'isValue'];
+                $cols[TblMarketReview::SUB_TYPE] =  [$subType, 'isValue'];
             }
             $id = $this->tblMarketReview->insert($cols);
         } catch (Exception $e) {
@@ -762,19 +766,19 @@ class Broker
             throw new BrokerExpection("either type, file, date or sub_type must be provided");
         }
         if ($type) {
-            $cols[tblMarketReview::TYPE] = [$type, 'isValue'];
+            $cols[TblMarketReview::TYPE] = [$type, 'isValue'];
         }
         if ($file) {
-            $cols[tblMarketReview::FILE] = [$file, 'isValue'];
+            $cols[TblMarketReview::FILE] = [$file, 'isValue'];
         }
         if ($date) {
-            $cols[tblMarketReview::DATE] = [$date, 'isValue'];
+            $cols[TblMarketReview::DATE] = [$date, 'isValue'];
         }
         if ($end_date) {
-            $cols[tblMarketReview::END_DATE] = [$end_date, 'isValue'];
+            $cols[TblMarketReview::END_DATE] = [$end_date, 'isValue'];
         }
         if ($sub_type) {
-            $cols[tblMarketReview::SUB_TYPE] = [$sub_type, 'isValue'];
+            $cols[TblMarketReview::SUB_TYPE] = [$sub_type, 'isValue'];
         }
 
         $this->tblMarketReview->updateById($cols, $id);
@@ -826,31 +830,31 @@ class Broker
         $info = $bind = [];
         $where = "";
         if ($type) {
-            $where .= " WHERE " . tblMarketReview::TYPE . " = :type";
+            $where .= " WHERE " . TblMarketReview::TYPE . " = :type";
             $bind['type'] = $type;
         }
         if ($file) {
-            $where .= $where ?  " AND " . tblMarketReview::FILE . " = :file " : " WHERE " . tblMarketReview::FILE . " = :file ";
+            $where .= $where ?  " AND " . TblMarketReview::FILE . " = :file " : " WHERE " . TblMarketReview::FILE . " = :file ";
             $bind['file'] = $file;
         }
         if ($date) {
-            $where .= $where ?  " AND " . tblMarketReview::DATE . " = :date " : " WHERE " . tblMarketReview::DATE . " = :date ";
+            $where .= $where ?  " AND " . TblMarketReview::DATE . " = :date " : " WHERE " . TblMarketReview::DATE . " = :date ";
             $bind['date'] = $date->format('Y-m-d');
         }
         if ($endDate) {
-            $where .= $where ?  " AND " . tblMarketReview::END_DATE . " = :end_date " : " WHERE " . tblMarketReview::END_DATE . " = :end_date ";
+            $where .= $where ?  " AND " . TblMarketReview::END_DATE . " = :end_date " : " WHERE " . TblMarketReview::END_DATE . " = :end_date ";
             $bind['end_date'] = $endDate->format('Y-m-d');
         }
         if ($subType) {
-            $where .= $where ?  " AND " . tblMarketReview::SUB_TYPE . " = :sub_type " : " WHERE " . tblMarketReview::SUB_TYPE . " = :sub_type ";
+            $where .= $where ?  " AND " . TblMarketReview::SUB_TYPE . " = :sub_type " : " WHERE " . TblMarketReview::SUB_TYPE . " = :sub_type ";
             $bind['sub_type'] = $subType;
         }
 
-        $sql = "SELECT " . tblMarketReview::ID . " FROM " . tblMarketReview::TABLE . " $where ORDER BY " . tblMarketReview::ID . " DESC LIMIT " . Broker::LIMIT;
+        $sql = "SELECT " . TblMarketReview::ID . " FROM " . TblMarketReview::TABLE . " $where ORDER BY " . TblMarketReview::ID . " DESC LIMIT " . Broker::LIMIT;
         $result = $bind ? $this->query->executeSql($sql, $bind) : $this->query->executeSql($sql);
         if ($result['rows']) {
             foreach ($result['rows'] as $aResult) {
-                $info[] = $this->marketReviewInfo($aResult[tblMarketReview::ID]);
+                $info[] = $this->marketReviewInfo($aResult[TblMarketReview::ID]);
             }
         }
         return $info;
@@ -1206,6 +1210,105 @@ class Broker
         if ($result['rows']) {
             foreach ($result['rows'] as $aResult) {
                 $info[] = $this->dailyNewsInfo($aResult[tblDailyNews::ID]);
+            }
+        }
+        return $info;
+    }
+
+    /**
+     * for creating newsletter subscription
+     *
+     * @param string $email subscriber email
+     * @param string|null $name subscriber name
+     * @return int the id of the new subscription
+     */
+    public function createNewsletter(string $email, string|null $name = null):int
+    {
+        try {
+            $cols[TblNewsletter::EMAIL] = [$email, 'isValue'];
+            if($name) {
+                $cols[TblNewsletter::NAME] =  [$name, 'isValue'];
+            }
+            $id = $this->tblNewsletter->insert($cols);
+        } catch (Exception $e) {
+            throw new BrokerExpection("Error creating Newsletter : " . $e->getMessage());
+        }
+        return $id;
+    }
+
+    /**
+     * for change newsletter subscription
+     *
+     * @param int $id the id of the subscriber
+     * @param string|null $email subscriber email
+     * @param string|null $name subscriber name
+     * @return void
+     */
+    public function changeNewsletter(int $id, string|null $email=null, string|null $name=null)
+    {
+        if (!$email && !$name) {
+            throw new BrokerExpection("either email or name must be provided");
+        }
+        if ($email) {
+            $cols[TblMarketReview::TYPE] = [$email, 'isValue'];
+        }
+        if ($name) {
+            $cols[TblMarketReview::FILE] = [$name, 'isValue'];
+        }
+
+        $this->tblNewsletter->updateById($cols, $id);
+    }
+
+    /**
+     * for deleting existing newsletter subscription
+     *
+     * @param int $id of the newsletter subscription
+     */
+    public function deleteNewsletter(int $id)
+    {
+        try {
+            $this->tblNewsletter->deleteById($id);
+        } catch (Exception $e) {
+            throw new BrokerExpection("this Newsletter has dependence: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * for getting info about a newsletter subscription
+     *
+     * @param int $id the newsletter subscription id
+     * @return array an array containing the newsletter subscription information
+     */
+    public function newsletterInfo(int $id): array
+    {
+        return $this->tblNewsletter->get($id);
+    }
+
+    /**
+     * for getting info of some  newsletter subscription
+     *
+     * @param string|null $email subscriber email
+     * @param string|null $name subscriber name
+     * @return array
+     */
+    public function someNewsletter(string|null $email=null, string|null $name=null):array
+    {
+        $info = $bind = [];
+        $where = "";
+        if ($email) {
+            $where .= " WHERE " . TblNewsletter::EMAIL . " = :email";
+            $bind['email'] = $email;
+        }
+        if ($name) {
+            $where .= $where ?  " AND " . TblNewsletter::NAME . " = :name " : " WHERE " . TblNewsletter::NAME . " = :name ";
+            $bind['name'] = $name;
+        }
+
+        $sql = "SELECT " . TblNewsletter::ID . " FROM " . TblNewsletter::TABLE . " $where ORDER BY " . TblNewsletter::ID . " DESC LIMIT " . Broker::LIMIT;
+        $result = $bind ? $this->query->executeSql($sql, $bind) : $this->query->executeSql($sql);
+        if ($result['rows']) {
+            foreach ($result['rows'] as $aResult) {
+                $info[] = $this->newsletterInfo($aResult[TblNewsletter::ID]);
             }
         }
         return $info;
